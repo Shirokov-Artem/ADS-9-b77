@@ -30,6 +30,14 @@ class BST {
     root = insert(root, value);
   }
 
+  int depth() const {
+    return depth(root);
+  }
+
+  bool search(T value) const {
+    return search(root, value);
+  }
+
  private:
   void destroy(BSTNode<T>* node) {
     if (node != nullptr) {
@@ -51,6 +59,33 @@ class BST {
     }
 
     return node;
+  }
+
+  int depth(BSTNode<T>* node) const {
+    if (node == nullptr) {
+      return 0;
+    }
+
+    int leftDepth = depth(node->left);
+    int rightDepth = depth(node->right);
+
+    return (leftDepth > rightDepth) ? leftDepth + 1 : rightDepth + 1;
+  }
+
+  bool search(BSTNode<T>* node, T value) const {
+    if (node == nullptr) {
+      return false;
+    }
+
+    if (node->value == value) {
+      return true;
+    }
+
+    if (value < node->value) {
+      return search(node->left, value);
+    } else {
+      return search(node->right, value);
+    }
   }
 };
 #endif  // INCLUDE_BST_H_
