@@ -7,30 +7,26 @@
 #include  "bst.h"
 
 BST<std::string> makeTree(const char* filename) {
-    std::ifstream file(filename);
-    if (!file) {
-        std::cerr << "Error opening file " << filename << std::endl;
-        exit(1);
-    }
-    std::string word;
-    BST<std::string> tree;
-    while ((word = getNextWord(file)) != "") {
-        tree.insert(word);
-    }
-    return tree;
-}
+  std::ifstream file(filename);
 
-std::string getNextWord(std::ifstream& file) {
-    std::string word;
-    char ch;
-    while (file.get(ch) && !isalpha(ch)) {
+  if (!file) {
+    std::cout << "File error!" << std::endl;
+    exit(1);
+  }
+
+  BST<std::string> tree;
+  std::string word;
+
+  while (file >> word) {
+    // преобразуем слово к нижнему регистру
+    std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+
+    // проверяем, что слово состоит только из латинских букв
+    if (std::all_of(word.begin(), word.end(), [](char c) { return std::isalpha(c); })) {
+      tree.insert(word);
     }
-    if (!file) {
-        return "";
-    }
-    word += tolower(ch);
-    while (file.get(ch) && isalpha(ch)) {
-        word += tolower(ch);
-    }
-    return word;
+  }
+
+  file.close();
+  return tree;
 }
