@@ -2,90 +2,126 @@
 #ifndef INCLUDE_BST_H_
 #define INCLUDE_BST_H_
 
-#include <algorithm>
 #include <string>
 
 template<typename T>
-class BSTNode {
- public:
-  T value;
-  BSTNode<T>* left;
-  BSTNode<T>* right;
-
-  explicit BSTNode(T value) : value(value), left(nullptr), right(nullptr) {}
-};
-
-template<typename T>
 class BST {
- public:
-  BSTNode<T>* root;
-
-  BST() : root(nullptr) {}
-
-  ~BST() {
-    destroy(root);
-  }
-
-  void insert(T value) {
-    root = insert(root, value);
-  }
-
-  int depth() const {
-    return depth(root);
-  }
-
-  bool search(T value) const {
-    return search(root, value);
-  }
-
- private:
-  void destroy(BSTNode<T>* node) {
-    if (node != nullptr) {
-      destroy(node->left);
-      destroy(node->right);
-      delete node;
-    }
-  }
-
-  BSTNode<T>* insert(BSTNode<T>* node, T value) {
-    if (node == nullptr) {
-      return new BSTNode<T>(value);
+public:
+    BST() { }
+    ~BST() {
+        clear(root_);
     }
 
-    if (value < node->value) {
-      node->left = insert(node->left, value);
-    } else if (value > node->value) {
-      node->right = insert(node->right, value);
+    void insert(const T& key) {
+        if (root_ == nullptr) {
+            root_ = createNode(key);
+        } else {
+            insertHelper(root_, key);
+        }
     }
 
-    return node;
-  }
-
-  int depth(BSTNode<T>* node) const {
-    if (node == nullptr) {
-      return 0;
+    int find(const T& key) const {
+        return findHelper(root_, key);
     }
 
-    int leftDepth = depth(node->left);
-    int rightDepth = depth(node->right);
-
-    return (leftDepth > rightDepth) ? leftDepth + 1 : rightDepth + 1;
-  }
-
-  bool search(BSTNode<T>* node, T value) const {
-    if (node == nullptr) {
-      return false;
+    size_t size() const {
+        return sizeHelper(root_);
     }
 
-    if (node->value == value) {
-      return true;
+    size_t depth() const {
+        return depthHelper(root_);
     }
 
-    if (value < node->value) {
-      return search(node->left, value);
-    } else {
-      return search(node->right, value);
+    void bfs(void (*func)(T&)) const {
+        std::vector<BSTNode*> nodes;
+        if (root_ != nullptr) {
+            nodes.push_back(root_);
+        }
+        for (size_t i = 0; i < nodes.size(); i++) {
+            BSTNode* node = nodes[i];
+            func(node->key);
+            if (node->left != nullptr) {
+                nodes.push_back(node->left);
+            }
+            if (node->right != nullptr) {
+                nodes.push_back(node->right);
+            }
+        }
     }
-  }
+
+private:
+    struct BSTNode {
+        T key;
+        int freq;
+        BSTNode* left;
+        BSTNode* right;
+
+        BSTNode(const T& key)
+            : key(key),
+              freq(1),
+              left(nullptr),
+              right(nullptr) {}
+    };
+
+    BSTNode* root_ = nullptr;
+
+    BSTNode* createNode(const T& key) {
+        BSTNode* node = new BSTNode(key);
+        return node;
+    }
+
+    void insertHelper(BSTNode* node, const T& key) {
+        if (node->key == key) {
+            node->freq++;
+        } else if (node->key > key) {
+            if (node->left == nullptr) {
+                node->left = createNode(key);
+            } else {
+                insertHelper(node->left, key);
+            }
+        } else {
+            if (node->right == nullptr) {
+                node->right = createNode(key);
+            } else {
+                insertHelper(node->right, key);
+            }
+        }
+    }
+
+    int findHelper(BSTNode* node, const T& key) const {
+        if (node == nullptr) {
+            return 0;
+        } else if (node->key == key) {
+            return node->freq;
+        } else if (node->key > key) {
+            return findHelper(node->left, key);
+        } else {
+            return findHelper(node->right, key);
+        }
+    }
+
+    void clear(BSTNode* node) {
+        if (node != nullptr) {
+            clear(node->left);
+            clear(node->right);
+            delete node;
+        }
+    }
+
+    size_t sizeHelper(BSTNode* node) const {
+        if (node == nullptr) {
+            return 0;
+        } else {
+            return 1 + sizeHelper(node->left) + sizeHelper(node->right);
+        }
+    }
+
+    size_t depthHelper(BSTNode* node) const {
+        if (node == nullptr) {
+            return 0;
+        } else {
+            return 1 + std::max(depthHelper(node->left), depthHelper(node->right));
+        }
+    }
 };
 #endif  // INCLUDE_BST_H_
