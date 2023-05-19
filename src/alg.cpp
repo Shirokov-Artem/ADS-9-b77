@@ -1,10 +1,10 @@
 // Copyright 2021 NNTU-CS
+#include  "bst.h"
 #include  <iostream>
 #include  <fstream>
 #include  <locale>
 #include  <cstdlib>
 #include  <string>
-#include  "bst.h"
 #include <cctype>
 #include <stdexcept>
 
@@ -16,7 +16,7 @@ BST<std::string> makeTree(const char* filename) {
   }
   std::string word;
   while (file >> word) {
-    std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c){ return std::tolower(c); });
+    std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c) { return std::tolower(c);});
     bst.add(word);
   }
   return bst;
