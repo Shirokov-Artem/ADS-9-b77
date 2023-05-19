@@ -2,7 +2,10 @@
 #ifndef INCLUDE_BST_H_
 #define INCLUDE_BST_H_
 
+#include <vector>
+#include <ostream>
 #include <string>
+#include <iostream>
 
 template<typename T>
 class BST {
@@ -11,7 +14,6 @@ public:
     ~BST() {
         clear(root_);
     }
-
     void insert(const T& key) {
         if (root_ == nullptr) {
             root_ = createNode(key);
@@ -19,19 +21,15 @@ public:
             insertHelper(root_, key);
         }
     }
-
     int find(const T& key) const {
         return findHelper(root_, key);
     }
-
     size_t size() const {
         return sizeHelper(root_);
     }
-
     size_t depth() const {
         return depthHelper(root_);
     }
-
     void bfs(void (*func)(T&)) const {
         std::vector<BSTNode*> nodes;
         if (root_ != nullptr) {
