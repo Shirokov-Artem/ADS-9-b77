@@ -7,7 +7,7 @@
 
 template<typename T>
 class Node {
-    public:
+ public:
     T key;
     int count;
     Node* left_child, * right_child;
@@ -48,7 +48,7 @@ class BST {
          }
      }
      int get_depth(Node<T>* node) {
-         if(node == nullptr) {
+         if (node == nullptr) {
              return 0;
          }
          return std::max(get_depth(node->left_child), get_depth(node->right_child)) + 1;
