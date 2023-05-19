@@ -4,8 +4,9 @@
 #include  <locale>
 #include  <cstdlib>
 #include  <string>
-#include <cstring>
 #include  "bst.h"
+#include <cctype>
+#include <stdexcept>
 
 BST<std::string> makeTree(const char* filename) {
   BST<std::string> bst;
@@ -15,8 +16,8 @@ BST<std::string> makeTree(const char* filename) {
   }
   std::string word;
   while (file >> word) {
-      std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c){ return std::tolower(c);});
-      bst.add(word);
+    std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c){ return std::tolower(c); });
+    bst.add(word);
   }
   return bst;
 }
