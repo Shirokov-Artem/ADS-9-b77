@@ -1,29 +1,32 @@
 // Copyright 2021 NNTU-CS
-#include  <iostream>
-#include  <fstream>
-#include  <locale>
-#include  <cstdlib>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include <cctype>
-#include <stdexcept>
 #include "bst.h"
 
 BST<std::string> makeTree(const char* filename) {
-    std::ifstream file(filename);
-    if (!file.is_open()) {
-        throw std::runtime_error("Error! Can not open file!");
+  BST<std::string> tree;
+  std::ifstream file(filename);
+  if (file.fail()) {
+    std::cerr << "Failed to open file!\n";
+    exit(EXIT_FAILURE);
+  }
+  std::string line;
+  std::string word;
+  while (std::getline(file, line)) {
+    for (auto c : line) {
+      if (isalpha(c)) {
+        word += tolower(c);
+      } else if (!word.empty()) {
+        tree.addElement(word);
+        word.clear();
+      }
     }
-    BST<std::string> tree;
-    std::string word;
-    while (file >> word) {
-        std::string new_word;
-        for (char c : word) {
-            if (std::isalpha(c)) {
-                new_word += std::tolower(c);
-            }
-        }
-        if (!new_word.empty()) {
-            tree.add(new_word);
-        }
-    }
-    return tree;
+  }
+  if (!word.empty()) {
+    tree.addElement(word);
+  }
+  file.close();
+  return tree;
 }
