@@ -6,7 +6,6 @@
 #include <cctype>
 #include <stdexcept>
 #include "bst.h"
-#include "alg.h"
 
 BST<std::string> makeTree(const char* filename) {
     std::ifstream file(filename);
