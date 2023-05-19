@@ -3,64 +3,71 @@
 #define INCLUDE_BST_H_
 
 #include <string>
-#include <iostream>
-#include <fstream>
+#include <algorithm>
 
-template<class T>
+template<typename T>
+class Node {
+    public:
+    T key;
+    int count;
+    Node* left_child, * right_child;
+    explicit Node(T k) : key(k), count(1), left_child(nullptr), right_child(nullptr) {}
+};
+template<typename T>
 class BST {
  private:
-    struct Node {
-        T key;
-        int count;
-        Node* left;
-        Node* right;
-        Node(T k) : key(k), count(1), left(nullptr), right(nullptr) {}
-    };
-    Node* root = nullptr;
-    Node* insert(Node* cur, T key) {
-        if (!cur) {
-            return new Node(key);
-        }
-        if (cur->key == key) {
-            cur->count++;
-        } else if (cur->key > key) {
-            cur->left = insert(cur->left, key);
+     Node<T>* root;
+     void insert(Node<T>* node, const T& key) {
+        if (node->key == key) {
+            node->count++;
+            return;
+        } else if (node->key > key) {
+            if (node->left_child == nullptr) {
+                node->left_child = new Node<T>(key);
+                return;
+            }
+            insert(node->left_child, key);
         } else {
-            cur->right = insert(cur->right, key);
+            if (node->right_child == nullptr) {
+                node->right_child = new Node<T>(key);
+                return;
+            }
+            insert(node->right_child, key);
         }
-        return cur;
-    }
-    int search(Node* cur, T key) {
-        if (!cur) {
-            return 0;
-        }
-        if (cur->key == key) {
-            return cur->count;
-        } else if (cur->key > key) {
-            return search(cur->left, key);
-        } else {
-            return search(cur->right, key);
-        }
-    }
-    int depth(Node* cur) {
-        if (!cur) {
-            return -1;
-        }
-        int leftDepth = depth(cur->left);
-        int rightDepth = depth(cur->right);
-        return std::max(leftDepth, rightDepth) + 1;
-    }
+     }
+     int search(Node<T>* node, const T& key) {
+         if (node == nullptr) {
+             return 0;
+         }
+         if (node->key == key) {
+             return node->count;
+         } else if (node->key > key) {
+             return search(node->left_child, key);
+         } else {
+             return search(node->right_child, key);
+         }
+     }
+     int get_depth(Node<T>* node) {
+         if(node == nullptr) {
+             return 0;
+         }
+         return std::max(get_depth(node->left_child), get_depth(node->right_child)) + 1;
+     }
 
  public:
-    BST() = default;
-    void add(const T& key) {
-        root = insert(root, key);
-    }
-    int search(const T& key) {
-        return search(root, key);
-    }
-    int calcDepth() {
-        return depth(root);
-    }
+     BST() : root(nullptr) {}
+     void insert(const T& key) {
+         if (root == nullptr) {
+             root = new Node<T>(key);
+             return;
+         }
+         insert(root, key);
+     }
+     int search(const T& key) {
+         return search(root, key);
+     }
+     int depth() {
+         return get_depth(root) - 1;
+     }
 };
 #endif  // INCLUDE_BST_H_
