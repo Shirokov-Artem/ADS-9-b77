@@ -4,21 +4,19 @@
 #include  <locale>
 #include  <cstdlib>
 #include  <string>
+#include <cstring>
 #include  "bst.h"
 
 BST<std::string> makeTree(const char* filename) {
   BST<std::string> bst;
   std::ifstream file(filename);
   if (!file.is_open()) {
-    throw std::string("Error! Could not open file.");
+    throw std::runtime_error("Error! Can not open file!");
   }
   std::string word;
-  while (file >> word){
-    for (int i = 0; i < word.length(); i++) {
-      word[i] = std::tolower(word[i]);
-    }
-    bst.Add(word);
+  while (file >> word) {
+      std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c){ return std::tolower(c);});
+      bst.add(word);
   }
-  file.close();
   return bst;
 }
