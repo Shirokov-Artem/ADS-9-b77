@@ -22,9 +22,9 @@ class BST {
     Node** cur = &root;
     while (*cur != nullptr) {
       if ((*cur)->value < value) {
-        cur = &(*cur)->left;
-      } else if ((*cur)->value > value) {
         cur = &(*cur)->right;
+      } else if ((*cur)->value > value) {
+        cur = &(*cur)->left;
       } else {
         (*cur)->count++;
         return;
@@ -38,9 +38,9 @@ class BST {
       if (cur->value == value) {
         return cur->count;
       } else if (cur->value < value) {
-        cur = cur->left;
-      } else {
         cur = cur->right;
+      } else {
+        cur = cur->left;
       }
     }
     return 0;
