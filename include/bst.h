@@ -10,8 +10,8 @@ class Node {
  public:
     T key;
     int count;
-    Node* left_child, * right_child;
-    explicit Node(T k) : key(k), count(1), left_child(nullptr), right_child(nullptr) {}
+    Node* left_c, * right_c;
+    explicit Node(T k) : key(k), count(1), left_c(nullptr), right_c(nullptr) {}
 };
 template<typename T>
 class BST {
@@ -22,17 +22,17 @@ class BST {
             node->count++;
             return;
         } else if (node->key > key) {
-            if (node->left_child == nullptr) {
-                node->left_child = new Node<T>(key);
+            if (node->left_c == nullptr) {
+                node->left_c = new Node<T>(key);
                 return;
             }
-            insert(node->left_child, key);
+            insert(node->left_c, key);
         } else {
-            if (node->right_child == nullptr) {
-                node->right_child = new Node<T>(key);
+            if (node->right_c == nullptr) {
+                node->right_c = new Node<T>(key);
                 return;
             }
-            insert(node->right_child, key);
+            insert(node->right_c, key);
         }
      }
      int search(Node<T>* node, const T& key) {
@@ -42,16 +42,16 @@ class BST {
          if (node->key == key) {
              return node->count;
          } else if (node->key > key) {
-             return search(node->left_child, key);
+             return search(node->left_c, key);
          } else {
-             return search(node->right_child, key);
+             return search(node->right_c, key);
          }
      }
      int get_depth(Node<T>* node) {
          if (node == nullptr) {
              return 0;
          }
-         return std::max(get_depth(node->left_child), get_depth(node->right_child)) + 1;
+         return std::max(get_depth(node->left_c), get_depth(node->right_c)) + 1;
      }
 
  public:
