@@ -2,78 +2,67 @@
 #ifndef INCLUDE_BST_H_
 #define INCLUDE_BST_H_
 
-#include <cstdlib>
-#include <iostream>
-#include <algorithm>  // add for std::max()
-
-template <typename T>
+template<typename T>
 class BST {
-    struct Node {
-        T data;
-        Node* left;
-        Node* right;
-        explicit Node(const T& value) : data(value), left(nullptr), right(nullptr) {}
-    };
-
-    Node* _root;
-
- public:
-
-    BST() : _root(nullptr) {}
-    virtual ~BST() {
-        destroy(_root);
-    }
-    void insert(const T& value) {
-        _root = insert(value, _root);
-    }
-    int depth() const {
-        return depth(_root);
-    }
-    int search(const T& value) const {
-        return search(value, _root);
-    }
 
  private:
-    // рекурсивная функция для уничтожения дерева
-    void destroy(Node* p) {
-        if (p != nullptr) {
-            destroy(p->left);
-            destroy(p->right);
-            delete p;
-        }
+  struct Node {
+    T value;
+    int count;
+    Node* left;
+    Node* right;
+  };
+  Node* root;
+  Node* addNode(Node* p, const T& value) {
+    if (p == nullptr) {
+      p = new Node{value, 1, nullptr, nullptr};
     }
-    // рекурсивная функция для вставки элемента в дерево
-    Node* insert(const T& value, Node* p) {
-        if (p == nullptr) {
-            return new Node(value);
-        }
-        if (value < p->data) {
-            p->left = insert(value, p->left);
-        } else if (value > p->data) {
-            p->right = insert(value, p->right);
-        }
-        return p;
+    else if (value < p->value) {
+      p->left = addNode(p->left, value);
     }
-    // рекурсивная функция для подсчёта глубины дерева
-    int depth(Node* p) const {
-        if (p == nullptr) {
-            return 0;
-        }
-        return 1 + std::max(depth(p->left), depth(p->right));
+    else if (value > p->value) {
+      p->right = addNode(p->right, value);
     }
-    // рекурсивная функция для поиска заданного элемента в дереве
-    int search(const T& value, Node* p) const {
-        if (p == nullptr) { // если элемент не найден
-            return -1;
-        }
-        if (value == p->data) { // если элемент найден
-            return depth(p);
-        }
-        if (value < p->data) { // если значение меньше текущего элемента, идём влево
-            return search(value, p->left);
-        }
-        // иначе идём вправо
-        return search(value, p->right);
+    else {
+      p->count++;
     }
+    return p;
+  }
+  int searchNode(Node* p, const T& value) {
+    if (p == nullptr) {
+      return 0;
+    }
+    else if (value == p->value) {
+      return p->count;
+    }
+    else if (value < p->value) {
+      return searchNode(p->left, value);
+    }
+    else {
+      return searchNode(p->right, value);
+    }
+  }
+  int getDepth(Node* p) {
+    if (p == nullptr) {
+      return 0;
+    }
+    else {
+      int leftDepth = getDepth(p->left);
+      int rightDepth = getDepth(p->right);
+      return (leftDepth > rightDepth ? leftDepth : rightDepth) + 1;
+    }
+  }
+
+ public:
+  BST() : root(nullptr) {}
+  void Add(const T& value) {
+    root = addNode(root, value);
+  }
+  int search(const T& value) {
+    return searchNode(root, value);
+  }
+  int depth() {
+    return getDepth(root) - 1;
+  }
 };
 #endif  // INCLUDE_BST_H_
