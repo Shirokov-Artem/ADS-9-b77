@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>  // add for std::max()
 
 template <typename T>
 class BST {
@@ -11,13 +12,13 @@ class BST {
         T data;
         Node* left;
         Node* right;
-
-        Node(const T& value) : data(value), left(nullptr), right(nullptr) {}
+        explicit Node(const T& value) : data(value), left(nullptr), right(nullptr) {}
     };
 
     Node* _root;
 
  public:
+
     BST() : _root(nullptr) {}
     virtual ~BST() {
         destroy(_root);
