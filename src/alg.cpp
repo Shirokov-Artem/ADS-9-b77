@@ -14,10 +14,12 @@ BST<std::string> makeTree(const char* filename) {
         std::string processed_word;
         // переводим все буквы в нижний регистр
         for (char c : word) {
-            processed_word += std::tolower(c);
+            if (std::isalpha(c)) {
+                processed_word += std::tolower(c);
+            }
         }
         // если слово состоит только из латинских букв, добавляем его в дерево
-        if (std::isalpha(processed_word[0])) {
+        if (!processed_word.empty()) {
             tree.insert(processed_word);
         }
     }
